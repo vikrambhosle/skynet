@@ -1,0 +1,45 @@
+db.bridgeData.insertMany([
+   // MongoDB adds the _id field with an ObjectId if _id is not present
+  {
+  "grammarRule": "enterInfile_stmt",
+  "matchRule":"test",
+  "description":"Read from file and sort based onon XYZ variables",
+   "tranformFunction": " ",
+  "translatedCodeReccomendation": true,
+  "translatedCode": "",
+  "more info": "URL",
+  "object": {
+    "datastore": "b",
+    "function": "d",
+    "parameters": "f"
+  }
+ },
+   {
+  "grammarRule": "enterInfile_stmt",
+  "matchRule":"random",
+  "description":"Read from file and sort based onon XYZ variables",
+   "tranformFunction": " ",
+  "translatedCodeReccomendation": true,
+  "translatedCode": "",
+  "more info": "URL",
+  "object": {
+    "datastore": "b",
+    "function": "d",
+    "parameters": "f"
+  }
+ },
+   {
+  "grammarRule": "exitInfile_stmt",
+  "matchRule":"test",
+  "description":"Read from file and sort based onon XYZ variables",
+   "tranformFunction": " ",
+  "translatedCodeReccomendation": true,
+  "translatedCode": "",
+  "more info": "URL",
+  "object": {
+    "datastore": "b",
+    "function": "d",
+    "parameters": "f"
+  }
+ }
+]);
