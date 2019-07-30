@@ -43,3 +43,5 @@ db.bridgeData.insertMany([
   }
  }
 ]);
+
+db.bridgeData.find({grammarRule:"exitInfile_stmt"});
