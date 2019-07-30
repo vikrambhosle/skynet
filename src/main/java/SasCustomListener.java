@@ -21,21 +21,27 @@ import org.json.simple.JSONObject;
 
 
 
-public class SasCustomListener extends InfileStmtBaseListener {
+public class SasCustomListener extends SASBaseListener {
     List<HashMap<String, String>> codeDag = new ArrayList<HashMap<String, String>>();
 
     @Override
 
-    public void enterData_stmt_block(InfileStmtParser.Data_stmt_blockContext ctx) {
+    public void enterData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
         CharStream a = ctx.start.getInputStream();
 
         System.out.println(a);
         System.out.println(ctx.Identifier().getText());
+        String description ="Create a new data frame  "      ;
+
+
 
         HashMap<String, String> row = new HashMap<String, String>();
         row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
-        row.put("description", String.valueOf(ctx.getParent().getRuleIndex()));
+        row.put("description", description);
+
+
+
 
         codeDag.add(row);
 
@@ -43,12 +49,13 @@ public class SasCustomListener extends InfileStmtBaseListener {
     }
 
     @Override
-    public void enterInfile_stmt(InfileStmtParser.Infile_stmtContext ctx) {
+    public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
         String b = ctx.file_specification().getText();
         /* int b = ctx.stop.getStopIndex();
             Interval interval = new Interval(a,b);
         ingetText(interval); */
         System.out.println(b);
+
         // System.out.println(a);
         HashMap<String, String> row = new HashMap<String, String>();
         row.put("test", "2");
