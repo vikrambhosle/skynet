@@ -23,48 +23,57 @@ import org.json.simple.JSONObject;
 
 public class SasCustomListener extends SASBaseListener {
     List<HashMap<String, String>> codeDag = new ArrayList<HashMap<String, String>>();
+    // Data step global variables
+     String dsSource ;
+     String dsTarget;
+
+
+
+    //TODO :  target will be combination of target name and associated options
+
 
     @Override
 
     public void enterData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
+
         CharStream a = ctx.start.getInputStream();
 
         System.out.println(a);
-        System.out.println(ctx.Identifier().getText());
-        String description ="Create a new data frame  "      ;
+        System.out.println();
+        String description =" Data process "      ;
+        HashMap<String, String> row = new HashMap<String, String>();
+        row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        row.put("description", description);
+        codeDag.add(row);
+        dsTarget=ctx.Identifier().getText();
+    }
 
+    @Override
+    public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
+        CharStream sasCode = ctx.start.getInputStream();
+        String description =" Read a source file " ;
 
+        // Py code
+
+        String Pycode = "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
+
+        //TODO seperator and firstobs
 
         HashMap<String, String> row = new HashMap<String, String>();
         row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
         row.put("description", description);
-
-
-
+        row.put("sasCode",String.valueOf(sasCode));
+        row.put("pythonCode", Pycode);
 
         codeDag.add(row);
 
-
-    }
-
-    @Override
-    public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
-        String b = ctx.file_specification().getText();
-        /* int b = ctx.stop.getStopIndex();
-            Interval interval = new Interval(a,b);
-        ingetText(interval); */
-        System.out.println(b);
-
-        // System.out.println(a);
-        HashMap<String, String> row = new HashMap<String, String>();
-        row.put("test", "2");
-        codeDag.add(row);
         for (int i = 0; i < codeDag.size(); i++) {
             System.out.println(codeDag.get(i));
-
         }
-    }}
+        }
+    }
    /* public void  enterData_stmt_block(InfileStmtParser.Data_stmt_blockContext ctx){
         //System.out.println(ctx.DATA().toString());
         System.out.println("Method %s is data!");

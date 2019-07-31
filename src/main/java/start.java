@@ -4,10 +4,10 @@ import org.antlr.v4.runtime.tree.*;
 public class start {
     public static void main(String[] args) {
 
-        String javaClassContent = "data crime;\n" +
+        String javaClassContent = "data crime ;\n" +
                 "  infile \"crime.csv\" delimiter=\",\" firstobs=2;\n" +
                 "  input sid  $ crime murder pctmetro pctwhite pcths poverty single;\n" +
-                "run;"       ;
+        "run;"       ;
         SASLexer lexer = new SASLexer(CharStreams.fromString(javaClassContent));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SASParser parser = new SASParser(tokens);
@@ -16,7 +16,6 @@ public class start {
         SasCustomListener listener= new SasCustomListener();
         walker.walk(listener,tree);
         System.out.println(tree.toStringTree(parser));
-
 
         // do something here...
     }
