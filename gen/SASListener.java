@@ -47,6 +47,36 @@ public interface SASListener extends ParseTreeListener {
 	 */
 	void exitData_stmt_list(SASParser.Data_stmt_listContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SASParser#if_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf_stmt(SASParser.If_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SASParser#if_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf_stmt(SASParser.If_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SASParser#if_then_else_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf_then_else_stmt(SASParser.If_then_else_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SASParser#if_then_else_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf_then_else_stmt(SASParser.If_then_else_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SASParser#delete_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterDelete_stmt(SASParser.Delete_stmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SASParser#delete_stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitDelete_stmt(SASParser.Delete_stmtContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SASParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -306,6 +336,16 @@ public interface SASListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssign_stmt(SASParser.Assign_stmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SASParser#sas_stmt_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterSas_stmt_list(SASParser.Sas_stmt_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SASParser#sas_stmt_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitSas_stmt_list(SASParser.Sas_stmt_listContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SASParser#by_main}.
 	 * @param ctx the parse tree

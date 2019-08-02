@@ -1,5 +1,5 @@
 grammar Expression;
-options {tokenVocab=CommonLexerRules;}
+//options {tokenVocab=CommonLexerRules;}
 
 // FIXME: normally positive/negative prefix come ahead of multiple or divide, but antlr4 seem not agree
 // FIXME: I hate '=' as equal to operator so much that I use '==' instead

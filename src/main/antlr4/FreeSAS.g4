@@ -1,11 +1,10 @@
-dsdsds
 grammar FreeSAS;
 import CommonGrammar, AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt, 
 	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
 	RunStmt;
 
 parse
- : (sas_stmt_list)* EOF
+ : (sas_stmt_list) * EOF
  ;
 
 sas_stmt_list

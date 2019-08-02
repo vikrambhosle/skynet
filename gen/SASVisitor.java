@@ -34,6 +34,24 @@ public interface SASVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitData_stmt_list(SASParser.Data_stmt_listContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SASParser#if_stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf_stmt(SASParser.If_stmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SASParser#if_then_else_stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf_then_else_stmt(SASParser.If_then_else_stmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SASParser#delete_stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDelete_stmt(SASParser.Delete_stmtContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SASParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -189,6 +207,12 @@ public interface SASVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssign_stmt(SASParser.Assign_stmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SASParser#sas_stmt_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSas_stmt_list(SASParser.Sas_stmt_listContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SASParser#by_main}.
 	 * @param ctx the parse tree

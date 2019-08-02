@@ -63,6 +63,42 @@ public class SASBaseListener implements SASListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIf_stmt(SASParser.If_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIf_stmt(SASParser.If_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIf_then_else_stmt(SASParser.If_then_else_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIf_then_else_stmt(SASParser.If_then_else_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDelete_stmt(SASParser.Delete_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDelete_stmt(SASParser.Delete_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression(SASParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -370,6 +406,18 @@ public class SASBaseListener implements SASListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAssign_stmt(SASParser.Assign_stmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSas_stmt_list(SASParser.Sas_stmt_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSas_stmt_list(SASParser.Sas_stmt_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
