@@ -1,4 +1,8 @@
 grammar SAS;
+import  CommonGrammar,AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt,
+	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
+	RunStmt;
+
 
 /* this grammar implements this script
 data crime;
@@ -20,7 +24,7 @@ sas_stmt_block
  ;
 
 // must treat NEWLINE by hand, since raw data often delimited by newline
-data_stmt_block : DATA Identifier ';'
+data_stmt_block : data_stmt
    data_stmt_list*
    RUN ';'
  ;
@@ -31,7 +35,7 @@ data_stmt_list
  ;
 
 // TODO: incomplete
-infile_stmt
+/*infile_stmt
  : INFILE file_specification infile_options* ';'
  ;
 
@@ -42,20 +46,27 @@ file_specification
  ;
 
 infile_options
- : DELIMITER '=' STRINGLITERAL
- | FIRSTOBS '=' INT
+ : DELIMITER EQUAL STRINGLITERAL
+ | DELIM EQUAL STRINGLITERAL
+ | FIRSTOBS EQUAL INT
  | OBS '=' INT
  ;
+
 
 input_stmt
  : INPUT ('$'|Identifier)+ ';'
  ;
+*/
 
 
 
 
 
 
+
+
+
+/*
 INPUT : 'input';
 INFILE: 'infile' ;
 CARDS : 'cards' ;
@@ -74,5 +85,10 @@ fragment ESC :   '\\' [abtnfrv"'\\]    ;
 DATA : 'data' ;
 Identifier : [a-zA-Z_] [a-zA-Z_0-9]*;
 WS:[ \n\t\r]+ -> skip;
+
+*/
+
+
+
 
 //end

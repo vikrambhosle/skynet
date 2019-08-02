@@ -1,5 +1,6 @@
 grammar CommonGrammar;
 
+
 // FIXME: normally positive/negative prefix come ahead of multiple or divide, but antlr4 seem not agree
 // FIXME: I hate '=' as equal to operator so much that I use '==' instead
 expression
@@ -23,12 +24,12 @@ expression
  | expression (AND | OR ) expression
  | <assoc=right> expression '=' expression
  ;
-expressionList 
+expressionList
  : (expression | of_var_list) (',' (expression|of_var_list))*
  | expressionList ','+ expressionList
  ;
 
-of_var_list 
+of_var_list
  : 'of' (Identifier '-' Identifier) ((COMMA 'of')? (Identifier '-' Identifier) )*
  | 'of' Identifier Identifier*
  | 'of' Identifier '[' '*' ']'
@@ -61,15 +62,15 @@ literal
 variables
  : variables DOT variables
  | Identifier
- // place all the keywords here to resolve "keywords can also be identifiers" problem   
+ // place all the keywords here to resolve "keywords can also be identifiers" problem
  | DATE
  | ALTER
  | DROP
  ;
 /**
- * Tokens 
+ * Tokens
  * */
- 
+
 // reserved keywords
 ABEND : A B E N D ;
 END : E N D ;
@@ -107,7 +108,7 @@ MEND : M E N D ;
 RESOLVE : R E S O L V E ;
 TO : T O ;
 CLOSE : C L O S E ;
-INC : I N C ;  
+INC : I N C ;
 PAUSE : P A U S E ;
 RETURN : R E T U R N ;
 TSO : T S O ;
@@ -129,6 +130,10 @@ UNTIL : U N T I L ;
 DEACT : D E A C T ;
 INPUT : I N P U T ;
 PUT : P U T ;
+DELIMITER : D E L I M I T E R ;
+DELIM : D E L I M;
+FIRSTOBS : F I R S T O B S;
+OBS : O B S ;
 STOP : S T O P ;
 UPCASE : U P C A S E ;
 DEL : D E L ;
@@ -165,7 +170,7 @@ ELSE : E L S E ;
 KUPCASE : K U P C A S E ;
 QKTRIM : Q K T R I M ;
 SYMLOCAL : S Y M L O C A L ;
-Tk_NULL : '_' N U L L '_'; 
+Tk_NULL : '_' N U L L '_';
 // TODO: make it case insensitive
 // abort
 CANCEL : C A N C E L ;
@@ -175,26 +180,26 @@ NOLIST : N O L I S T  ;
 ARRAY : A R R A Y  ;
 ARRAY_NUMERIC_ELEMENTS : '_' N U M E R I C '_' ;
 ARRAY_CHARACTER_ELEMENTS : '_' C H A R A C T E R ' _' ;
-ARRAY_ALL_ELEMENTS : '_' A L L '_' ; 
+ARRAY_ALL_ELEMENTS : '_' A L L '_' ;
 
 // by
 GROUPFORMAT : G R O U P F O R M A T;
 NOTSORTED : N O T S O R  T E D  ;
 DESCENDING : D E S C E N D I N G  ;
-// call 
+// call
 CALL : C A L L ;
 
 // data statement
 DEBUG : D E B U G ;
 NESTING : N E S T I N G ;
-STACK : S T A C K; 
+STACK : S T A C K;
 READ: R E A D;
 PW: P W ;
 SOURCE: S O U R C E ;
 VIEW : V I E W ;
-PGM: P G M ; 
-ENCRYPT : E N C R Y P T ; 
-NOSAVE : N O S A V E ; 
+PGM: P G M ;
+ENCRYPT : E N C R Y P T ;
+NOSAVE : N O S A V E ;
 // datalines
 DATALINES : D A T A L I N E S ;
 CARDS : C A R D S  ;
@@ -204,11 +209,11 @@ CARDS4 : C A R D S '4'  ;
 LINES4 : L I N E S '4' ;
 END_DATALINES4 : ';;;;' ;
 ALTER : A L T E R ;
-// 
+//
 
 // infile
-DISK :  D I S K; 
-DUMMY :  D U M M Y ; 
+DISK :  D I S K;
+DUMMY :  D U M M Y ;
 GTERM : G T E R M ;
 PIPE : P I P E ;
 PLOTTER : P L O T T E R ;
@@ -274,7 +279,7 @@ EQ : E Q | '==' ;
 NE : N E | '^=' | '~=';
 GT : G T | '>' ;
 LT : L T | '<' ;
-GE : G E | '>='; 
+GE : G E | '>=';
 LE : L E | '<=';
 IN : I N;
 EQC : EQ ':' ;
@@ -290,7 +295,7 @@ NOT : N O T | '^' | '~' ;
 MIN : '><';
 MAX : '<>';
 
-// NOTE: date, time or bit literals must go ahead of Identifier 
+// NOTE: date, time or bit literals must go ahead of Identifier
 // in case '01jan04'd being recognized as string + Identifier
 DateLiteral: STRINGLITERAL D;
 TimeLiteral: STRINGLITERAL T;
@@ -304,22 +309,19 @@ STRINGLITERAL
     |   '\'' ( ESC | ~[\\'] )* '\''
     ;
 fragment ESC :   '\\' [abtnfrv"'\\]    ;
-INT : [0-9]+ ; 
-FloatingPointLiteral 
+INT : [0-9]+ ;
+FloatingPointLiteral
  : [0-9]* ('.') [0-9]+ ([eE][-+]?[0-9]+)?
  | INT '.'
  ;
 Identifier  : [a-zA-Z_] [a-zA-Z_0-9]*  ;
-
-
 // nicknames
 DOT : '.' ;
 AT : '@' ;
 EQUAL : '=' ;
 COMMA : ',' ;
 LBracket : '(' | '[' | '{' ;
-RBracket : ')' | ']' | '}' ; 
-
+RBracket : ')' | ']' | '}' ;
 fragment A:('a'|'A');
 fragment B:('b'|'B');
 fragment C:('c'|'C');
@@ -346,8 +348,9 @@ fragment W:('w'|'W');
 fragment X:('x'|'X');
 fragment Y:('y'|'Y');
 fragment Z:('z'|'Z');
-
-
 WS  :   [ \r\t\u000C\n]+ -> channel(HIDDEN) ;
 COMMENT    :   '/*' .*? '*/'    -> channel(HIDDEN) ;
 LINE_COMMENT    :   '*' ~[\r\n]* -> channel(HIDDEN) ;
+
+
+

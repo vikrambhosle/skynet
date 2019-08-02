@@ -46,12 +46,12 @@ public class SasCustomListener extends SASBaseListener {
         row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
         row.put("description", description);
         codeDag.add(row);
-        dsTarget=ctx.Identifier().getText();
+       // dsTarget=ctx.Identifier().getText();
     }
 
     @Override
     public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
-        CharStream sasCode = ctx.start.getInputStream();
+        //CharStream sasCode = ctx.start.getInputStream();
         String description =" Read a source file " ;
 
         // Py code
@@ -64,7 +64,7 @@ public class SasCustomListener extends SASBaseListener {
         row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
         row.put("description", description);
-        row.put("sasCode",String.valueOf(sasCode));
+        row.put("sasCode",ctx.getText());
         row.put("pythonCode", Pycode);
 
         codeDag.add(row);
