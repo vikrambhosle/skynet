@@ -1,3 +1,6 @@
+
+C:\Program Files\MongoDB\Server\4.0\bin
+
 db.bridgeData.insertMany([
    // MongoDB adds the _id field with an ObjectId if _id is not present
   {

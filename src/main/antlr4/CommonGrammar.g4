@@ -3,6 +3,10 @@ grammar CommonGrammar;
 
 // FIXME: normally positive/negative prefix come ahead of multiple or divide, but antlr4 seem not agree
 // FIXME: I hate '=' as equal to operator so much that I use '==' instead
+
+
+
+
 expression
  : literal
  | Identifier
@@ -100,6 +104,8 @@ SYSRPUT : S Y S R P U T ;
 BY : B Y ;
 GOTO : G O T O ;
 MACRO : M A C R O ;
+CONTINUE : C O N T I N U E;
+LEAVE : L E A V E;
 QUPCASE : Q U P C A S E ;
 THEN : T H E N ;
 CLEAR : C L E A R ;
@@ -185,7 +191,8 @@ ARRAY_ALL_ELEMENTS : '_' A L L '_' ;
 // by
 GROUPFORMAT : G R O U P F O R M A T;
 NOTSORTED : N O T S O R  T E D  ;
-DESCENDING : D E S C E N D I N G  ;
+DESCENDING : D E S C E N D I N G  | D E S C ;
+
 // call
 CALL : C A L L ;
 

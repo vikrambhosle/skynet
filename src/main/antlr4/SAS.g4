@@ -3,7 +3,6 @@ import  CommonGrammar,AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt,FreeSAS,
 	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
 	RunStmt;
 
-
 /* this grammar implements this script
 data crime;
   infile "crime.csv" delimiter="," firstobs=2;
@@ -19,7 +18,7 @@ parse :(sas_stmt_block)*EOF
 
 // a statement block is either data statement, procedure block or new lines
 sas_stmt_block :
-data_stmt_block
+data_stmt_block|proc_stmt
 ;
 
 // must treat NEWLINE by hand, since raw data often delimited by newline
@@ -39,7 +38,6 @@ data_stmt_list
 |datalines4_stmt
 |delete_stmt
 |drop_stmt
-|data_stmt
 |if_stmt
 |if_then_else_stmt
 |infile_stmt
