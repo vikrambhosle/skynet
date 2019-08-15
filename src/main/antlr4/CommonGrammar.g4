@@ -105,6 +105,7 @@ BY : B Y ;
 GOTO : G O T O ;
 MACRO : M A C R O ;
 CONTINUE : C O N T I N U E;
+NOBLOCK: N O B L O C K;
 LEAVE : L E A V E;
 QUPCASE : Q U P C A S E ;
 THEN : T H E N ;
