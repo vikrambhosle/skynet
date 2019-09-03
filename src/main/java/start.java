@@ -19,6 +19,9 @@ public class start {
         ParseTreeWalker walker = new ParseTreeWalker();
         SasCustomListener listener= new SasCustomListener();
         walker.walk(listener,tree);
+
+        TokenStreamRewriter rewriter = new TokenStreamRewriter(tokens);
+
         System.out.println(tree.toStringTree(parser));
 
         // do something here...

@@ -1,5 +1,8 @@
 import com.mongodb.client.MongoCollection;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,16 +52,16 @@ public class SasCustomListener extends SASBaseListener {
     @Override
     public void enterParse(SASParser.ParseContext ctx) {
 
-        document.put("fileName", " vb is a "fool" );
-                collection.insertOne(document);
+       /* this is temporary comment
+
+       document.put("fileName", " vb is a "fool" );
+                collection.insertOne(document);*/
 
     }
 
 
     public void enterData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
-
         CharStream a = ctx.start.getInputStream();
-
         String description =" New Data process "      ;
         HashMap<String, String> row = new HashMap<String, String>();
         row.put("index", String.valueOf(stmtNum));
@@ -76,12 +79,18 @@ public class SasCustomListener extends SASBaseListener {
     @Override
     public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
         String description =" Read a source file " ;
+        Token stop = ctx.getStop();
 
-        // Py code
+        //CommonTokenStream tokenStream= new CommonTokenStream();
+
+
+
+                   // Py code
         // Populate mandatory first and then handle optionals
-        String Pycode = "df"+currDf.toString()+"="+ "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
+                String Pycode = "df"+currDf.toString()+"="+ "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
         prevDF=currDf;
         currDf=currDf+1;
+           ctx.
         //TODO seperator and firstobs
         /*HashMap<String, String> row = new HashMap<String, String>();
         row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
@@ -98,7 +107,7 @@ public class SasCustomListener extends SASBaseListener {
         // Py code
         String columnList ;
         columnList="";
-
+ctx.input_specification().clear();
         for (int i = 0; i < ctx.input_specification().size(); i++) {
              if (i==ctx.input_specification().size()-1) {
                  columnList = columnList + ctx.input_specification(i).getText() ;
