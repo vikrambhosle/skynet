@@ -1,0 +1,76 @@
+{
+  "file": {
+    "fileName": "Hmeq.sas",
+    "Process":[{
+      "index": 1,
+      "ruleId" : 2,
+      "parentRuleID" :1,
+      "description" : "Data Process - Source Data ",
+      "processStep": [{
+        "ruleId" : 54,
+        "parentRuleID" : 3,
+        "description" : "Read a Source File ",
+        "sasCode" :   "infile 'raw_hmeq.csv', delimiter=',' firstobs=2;",
+        "pythonCode" :" df0 = pandas.read_csv('raw_hmeq.csv',sep=',', skiprows=2);"
+
+      },
+        {
+          "ruleId" : 59,
+          "parentRuleID" : 3,
+          "description" : "Select Input columns , format and pointers,",
+          "sasCode" : " Bad CLAge CLNo DebtInc Delinq Derog Job Loan MortDue loc",
+          "pythonCode" :"raw_data = df0[[ 'Bad','CLAge','CLNo','DebtInc','Delinq','Derog','Job','Loan','MortDue','loc']]"
+        }]
+    },
+      {
+        "index": 2,
+        "ruleId" : 2,
+        "parentRuleID" :1,
+        "description" : " Data Process  - Merge - Conditional Statements",
+        "processStep":[{
+          "ruleId" : 55,
+          "parentRuleID" : 3,
+          "description" : " Merge Data sets",
+          "sasCode" : " merge raw_data location by loc",
+          "pythonCode" :"proc_data = pandas.merge(raw_data location on='loc')"
+        },
+          {
+            "ruleId" : 57,
+            "parentRuleID" : 3,
+            "description" : "Conditional Statements",
+            "sasCode" : "if city='New York City' or city='Miami' then  region='ATLANTIC COAST' else if city='San Francisco'or city='Los Angeles' then    region='PACIFIC COAST'",
+            "pythonCode" :"proc_data['region'] = proc_data['city'].apply(lambda x: 'ATLANTIC COAST' if city='New York City'or city='Miami' else 'PACIFIC COAST' if city='San Francisco' or city='Los Angeles')"
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "ruleId" : 2,
+        "parentRuleID" :1,
+        "description" : " Analytics Process  - Statistical Functions",
+        "processStep":[{
+          "ruleId" : 55,
+          "parentRuleID" : 3,
+          "description" : "Descriptive Statistics ",
+          "sasCode" : " proc means data = proc_data   ; var CLAge Loan MortDue;run;",
+          "pythonCode" :"proc_data['Age', 'Salary', 'Yr_exp'].mean() ;proc_data['Age', 'Salary', 'Yr_exp'].std();proc_data['Age', 'Salary', 'Yr_exp'].median() "
+        }
+
+        ]
+      },
+      {
+        "index": 4,
+        "ruleId" : 2,
+        "parentRuleID" :1,
+        "description" : "Analytics Process - Advanced Algorithm",
+        "processStep": [{
+          "ruleId" : 54,
+          "parentRuleID" : 3,
+          "description" : " Regression Tree ",
+          "sasCode" :   "proc hpsplit data=hmeq maxdepth=5; class Bad Delinq Derog Job nInq Reason; model Bad(event='1') = Delinq Derog Job nInq Reason CLAge CLNo DebtInc Loan MortDue Value YoJ;   prune costcomplexity; partition fraction(validate=0.3 seed=123); code file='hpsplexc.sas';   rules file='rules.txt';run;",
+          "pythonCode" :" X = proc_data[feature_cols] ;y = proc_data.label ; X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=123) ; y_pred = clf.predict(X_test); clf = DecisionTreeClassifier( max_depth=5); clf = clf.fit(X_train,y_train)"
+
+        }]
+      }
+    ]}
+}
