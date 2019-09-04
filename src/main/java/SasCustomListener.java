@@ -54,7 +54,7 @@ public class SasCustomListener extends SASBaseListener {
 
        /* this is temporary comment
 
-       document.put("fileName", " vb is a "fool" );
+       document.put("fileName", " vb" );
                 collection.insertOne(document);*/
 
     }
@@ -72,8 +72,6 @@ public class SasCustomListener extends SASBaseListener {
         stmtNum = stmtNum+1;
                // dsTarget=ctx.Identifier().getText();
         document.put("index", String.valueOf(stmtNum));
-
-
     }
 
     @Override
@@ -81,24 +79,22 @@ public class SasCustomListener extends SASBaseListener {
         String description =" Read a source file " ;
         Token stop = ctx.getStop();
 
-        //CommonTokenStream tokenStream= new CommonTokenStream();
-
-
-
+        System.out.println(ctx.file_specification().getText());
+                //CommonTokenStream tokenStream= new CommonTokenStream();
                    // Py code
         // Populate mandatory first and then handle optionals
-                String Pycode = "df"+currDf.toString()+"="+ "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
+        String Pycode = "df"+currDf.toString()+"="+ "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
         prevDF=currDf;
         currDf=currDf+1;
-           ctx.
+           //ctx.
         //TODO seperator and firstobs
-        /*HashMap<String, String> row = new HashMap<String, String>();
+        HashMap<String, String> row = new HashMap<String, String>();
         row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
         row.put("description", description);
         row.put("sasCode",ctx.getText());
         row.put("pythonCode", Pycode);
-        codeDag.add(row); */
+        codeDag.add(row);
 
             }
 
@@ -107,7 +103,7 @@ public class SasCustomListener extends SASBaseListener {
         // Py code
         String columnList ;
         columnList="";
-ctx.input_specification().clear();
+        ctx.input_specification().clear();
         for (int i = 0; i < ctx.input_specification().size(); i++) {
              if (i==ctx.input_specification().size()-1) {
                  columnList = columnList + ctx.input_specification(i).getText() ;

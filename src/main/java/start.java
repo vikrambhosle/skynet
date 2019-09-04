@@ -7,11 +7,7 @@ public class start {
         String javaClassContent = "data crime ;\n" +
                 "  infile \"crime.csv\" delimiter=\",\" firstobs=2;\n" +
                 "  input sid  $ crime murder pctmetro pctwhite pcths poverty single;\n" +
-        "run; " +
-                "data crime ;\n" +
-                "  infile \"crime.csv\" delimiter=\",\" firstobs=2;\n" +
-                "  input sid  $ crime murder pctmetro pctwhite pcths poverty single;\n" +
-                "run;  "       ;
+        "run; "      ;
         SASLexer lexer = new SASLexer(CharStreams.fromString(javaClassContent));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SASParser parser = new SASParser(tokens);
