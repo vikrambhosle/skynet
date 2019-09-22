@@ -6,8 +6,14 @@ public class start {
 
         String javaClassContent = "data crime ;\n" +
                 "  infile \"crime.csv\" delimiter=\",\" firstobs=2;\n" +
-                "  input sid  $ crime murder pctmetro pctwhite pcths poverty single;\n" +
-        "run; "      ;
+                "  input sid  crime murder pctmetro pctwhite pcths poverty single;\n" +
+        "run; \n" +
+                "data test ;\n" +
+                "  infile \"test.csv\" delimiter=\",\" firstobs=2;\n" +
+                "  input fid crime murder pctmetro pctwhite pcths poverty single;\n" +
+                "run; "
+
+        ;
         SASLexer lexer = new SASLexer(CharStreams.fromString(javaClassContent));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SASParser parser = new SASParser(tokens);
@@ -15,9 +21,6 @@ public class start {
         ParseTreeWalker walker = new ParseTreeWalker();
         SasCustomListener listener= new SasCustomListener();
         walker.walk(listener,tree);
-
-        TokenStreamRewriter rewriter = new TokenStreamRewriter(tokens);
-
         System.out.println(tree.toStringTree(parser));
 
         // do something here...

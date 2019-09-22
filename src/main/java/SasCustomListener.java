@@ -35,7 +35,7 @@ import org.bson.Document;
 
 
 public class SasCustomListener extends SASBaseListener {
-     List<HashMap<String, String>> codeDag = new ArrayList<HashMap<String, String>>();
+     //List<HashMap<String, String>> codeDag = new ArrayList<HashMap<String, String>>();
     // Data step global variables
      String dsSource ;
      String dsTarget;
@@ -46,57 +46,56 @@ public class SasCustomListener extends SASBaseListener {
     MongoClient mongos = new MongoClient();
     MongoDatabase database = mongos.getDatabase("test");
     MongoCollection collection = database.getCollection("customers");
+    List process = new ArrayList();
+    List processStep = new ArrayList();
     Document document = new Document();
-
-
     @Override
     public void enterParse(SASParser.ParseContext ctx) {
-
-       /* this is temporary comment
-
-       document.put("fileName", " vb" );
-                collection.insertOne(document);*/
-
-    }
-
+        collection.deleteMany(new BasicDBObject());
+          }
 
     public void enterData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
-        CharStream a = ctx.start.getInputStream();
+        //CharStream a = ctx.start.getInputStream();
         String description =" New Data process "      ;
-        HashMap<String, String> row = new HashMap<String, String>();
+        document.put("index", String.valueOf(stmtNum));
+        document.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        document.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        document.put("description", description);
+        process.add(document);
+
+        /*HashMap<String, String> row = new HashMap<String, String>();
         row.put("index", String.valueOf(stmtNum));
         row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
         row.put("description", description);
-        codeDag.add(row);
+        codeDag.add(row);*/
         stmtNum = stmtNum+1;
-               // dsTarget=ctx.Identifier().getText();
-        document.put("index", String.valueOf(stmtNum));
+
     }
 
     @Override
     public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
         String description =" Read a source file " ;
-        Token stop = ctx.getStop();
-
         System.out.println(ctx.file_specification().getText());
-                //CommonTokenStream tokenStream= new CommonTokenStream();
+        //CommonTokenStream tokenStream= new CommonTokenStream();
                    // Py code
         // Populate mandatory first and then handle optionals
         String Pycode = "df"+currDf.toString()+"="+ "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
         prevDF=currDf;
         currDf=currDf+1;
-           //ctx.
-        //TODO seperator and firstobs
-        HashMap<String, String> row = new HashMap<String, String>();
-        row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
-        row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
-        row.put("description", description);
-        row.put("sasCode",ctx.getText());
-        row.put("pythonCode", Pycode);
-        codeDag.add(row);
 
-            }
+        //TODO seperator and firstobs
+        Document documentDetail = new Document();
+
+        documentDetail.put("description", description);
+        documentDetail.put("sasCode",ctx.getText());
+        documentDetail.put("pythonSyntax", Pycode);
+        documentDetail.put("pythonCode", Pycode);
+        documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        processStep.add(documentDetail);
+
+                    }
 
     public void enterInput_stmt(SASParser.Input_stmtContext ctx) {
         String description =" Select input columns , format and pointers" ;
@@ -116,37 +115,50 @@ public class SasCustomListener extends SASBaseListener {
         prevDF=currDf;
         currDf=currDf+1;
         System.out.println(ctx.getRuleIndex());
-        HashMap<String, String> row = new HashMap<String, String>();
-        row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
-        row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
-        row.put("description", description);
-        row.put("sasCode",ctx.getText());
-        row.put("pythonCode", Pycode);
+        Document documentDetail = new Document();
+        documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        documentDetail.put("description", description);
+        documentDetail.put("sasCode",ctx.getText());
+        documentDetail.put("pythonCode", Pycode);
+        processStep.add(documentDetail);
 
-        codeDag.add(row);
 
-        for (int i = 0; i < codeDag.size(); i++) {
-            System.out.println(codeDag.get(i));
-        }
     }
 
+    public void exitData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
+
+    document.put("processSteps", processStep);
+        collection.insertOne(document);
+        document.clear();
+        processStep.clear();
+        System.out.println(document.toString());
+    }
+
+    public void exitSas_stmt_block(SASParser.Sas_stmt_blockContext ctx) {
+
+
+        /*for (int i = 0; i < codeDag.size(); i++) {
+            Document document = new Document();
+            Document documentDetail = new Document();
+            Document documentDetailan = new Document();
+            document.put("fileName", " vb" );
+            List list = new ArrayList();
+            documentDetail.put("fileName", " vb" );
+            documentDetailan.put("fileName2", " vb2" );
+            list.add(documentDetail);
+            list.add(documentDetailan);
+            document.put("detail", list );
+            // list.clear();
+            collection.insertOne(document);
+
+
+            System.out.println(codeDag.get(i));
+        }*/
+    }
 
 
 }
-   /* public void  enterData_stmt_block(InfileStmtParser.Data_stmt_blockContext ctx){
-        //System.out.println(ctx.DATA().toString());
-        System.out.println("Method %s is data!");
-*/
 
-
-
-    /*public void enterProc_stmt_block_list(SASParser.Proc_stmt_block_listContext vtx){
-
-
-        System.out.println("Method %s is proc!");
-    }
-    public List<String> getErrors(){
-        return Collections.unmodifiableList(errors);
-    }*/
 
 

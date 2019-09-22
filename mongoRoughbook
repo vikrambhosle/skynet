@@ -1,5 +1,14 @@
 
 C:\Program Files\MongoDB\Server\4.0\bin
+run mongod
+db.city.find().pretty()
+db.city.find({provName:"Jawa Barat"})
+show collections\
+use test
+switched to db test
+> db.customers.drop()
+true
+> show collections
 
 db.bridgeData.insertMany([
    // MongoDB adds the _id field with an ObjectId if _id is not present
