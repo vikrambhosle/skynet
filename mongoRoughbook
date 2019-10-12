@@ -1,6 +1,7 @@
 
 C:\Program Files\MongoDB\Server\4.0\bin
-run mongod
+ mongod - -  to start server
+ mongo- to start prompt
 db.city.find().pretty()
 db.city.find({provName:"Jawa Barat"})
 show collections\

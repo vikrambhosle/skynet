@@ -1,17 +1,12 @@
+import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
@@ -19,20 +14,13 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.MongoClient;
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
-import com.mongodb.DB;
-import com.mongodb.MongoCredential;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
 import com.mongodb.BasicDBObjectBuilder;
 import org.bson.Document;
-
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class SasCustomListener extends SASBaseListener {
      //List<HashMap<String, String>> codeDag = new ArrayList<HashMap<String, String>>();
@@ -43,16 +31,35 @@ public class SasCustomListener extends SASBaseListener {
      Integer currDf = 0;
      Integer stmtNum = 0;
     //TODO :  target will be combination of target name and associated options
-    MongoClient mongos = new MongoClient();
-    MongoDatabase database = mongos.getDatabase("test");
-    MongoCollection collection = database.getCollection("customers");
+    MongoClientURI uri ;//= new MongoClientURI("mongodb://admin:ibm123@54.171.91.63/saspy" );
+    MongoClient mongos ;//= new MongoClient(uri);
+    MongoDatabase database ;
+    MongoCollection collection ;
     List process = new ArrayList();
     List processStep = new ArrayList();
     Document document = new Document();
+
+    static{
+
+        try(InputStream input = new FileInputStream("C:\\Users\\VIKRAMBHOSLE\\IdeaProjects\\skynet\\src\\main\\java\\config.properties"))
+    {
+        Properties prop = new Properties();
+       // load a properties file
+        prop.load(input);
+
+            }
+         catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @Override
     public void enterParse(SASParser.ParseContext ctx) {
-        collection.deleteMany(new BasicDBObject());
-          }
+       //Deleting the earlier collection
+
+            collection.deleteMany(new BasicDBObject());
+   }
 
     public void enterData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
         //CharStream a = ctx.start.getInputStream();
@@ -126,8 +133,76 @@ public class SasCustomListener extends SASBaseListener {
 
     }
 
-    public void exitData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
+    public void enterMerge_stmt (SASParser.Merge_stmtContext ctx) {
+        // yet  to becompleted
 
+        String description ="  Merge nad Join Data Sets - Conditional Statements" ;
+        // Py code
+        String columnList ;
+        columnList="";
+        //ctx.input_specification().clear();
+        for (int i = 0; i < ctx.dataset_name_opt().size(); i++) {
+            if (i==ctx.dataset_name_opt().size()-1) {
+                columnList = columnList + ctx.dataset_name_opt(i).getText() ;
+            }else {
+                columnList = columnList  + ctx.dataset_name_opt(i).getText()+ ",";
+            }
+        }
+        //TODO pointer and format
+        String Pycode = "df"+currDf.toString()+"="+ "df"+ prevDF.toString()+"[[" + columnList+ "]]" ;
+        prevDF=currDf;
+        currDf=currDf+1;
+        System.out.println(ctx.getRuleIndex());
+        Document documentDetail = new Document();
+        documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        documentDetail.put("description", description);
+        documentDetail.put("sasCode",ctx.getText());
+        documentDetail.put("pythonCode", Pycode);
+        processStep.add(documentDetail);
+    }
+
+    public void enterBoxplot_stmt(SASParser.Boxplot_stmtContext ctx) {
+        // yet  to becompleted
+        System.out.println(ctx.boxplot_stmt_list(0).getText());
+        System.out.println(ctx.boxplot_stmt_list(1).getText());
+        System.out.println(ctx.boxplot_stmt_list(2).getText());
+       /* String description ="  Merge nad Join Data Sets - Conditional Statements" ;
+        // Py code
+        String columnList ;
+        columnList="";
+        //ctx.input_specification().clear();
+        for (int i = 0; i < ctx.dataset_name_opt().size(); i++) {
+            if (i==ctx.dataset_name_opt().size()-1) {
+                columnList = columnList + ctx.dataset_name_opt(i).getText() ;
+            }else {
+                columnList = columnList  + ctx.dataset_name_opt(i).getText()+ ",";
+            }
+        }
+        //TODO pointer and format
+        String Pycode = "df"+currDf.toString()+"="+ "df"+ prevDF.toString()+"[[" + columnList+ "]]" ;
+        prevDF=currDf;
+        currDf=currDf+1;
+        System.out.println(ctx.getRuleIndex());
+        Document documentDetail = new Document();
+        documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        documentDetail.put("description", description);
+        documentDetail.put("sasCode",ctx.getText());
+        documentDetail.put("pythonCode", Pycode);
+        processStep.add(documentDetail); */
+    }
+
+
+
+
+
+
+
+
+
+    public void exitData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
+       // populating  the collection
     document.put("processSteps", processStep);
         collection.insertOne(document);
         document.clear();

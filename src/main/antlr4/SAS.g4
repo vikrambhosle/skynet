@@ -1,7 +1,7 @@
 grammar SAS;
 import  CommonGrammar,AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt,FreeSAS,
 	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
-	RunStmt;
+	RunStmt, MergeStmt , ProcBoxplot ;
 
 /* this grammar implements this script
 data crime;
@@ -47,7 +47,14 @@ data_stmt_list
 |proc_stmt// assign must go last
 |assign_stmt
 |run_stmt
+|merge_stmt
  ;
+
+proc_stmt
+:boxplot_stmt ;
+
+
+
 
 if_stmt
  : IF expression ';'
