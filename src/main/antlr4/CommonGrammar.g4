@@ -102,6 +102,9 @@ LOCAL : L O C A L ;
 QUOTE : Q U O T E ;
 SYSRPUT : S Y S R P U T ;
 BY : B Y ;
+PLOT : P L O T ;
+INSET : I N S E T;
+INSETGROUP : I N S E T G R O U P;
 GOTO : G O T O ;
 MACRO : M A C R O ;
 CONTINUE : C O N T I N U E;
@@ -177,11 +180,15 @@ ELSE : E L S E ;
 KUPCASE : K U P C A S E ;
 QKTRIM : Q K T R I M ;
 SYMLOCAL : S Y M L O C A L ;
+BOXPLOT : B O X P L O T ;
 Tk_NULL : '_' N U L L '_';
 // TODO: make it case insensitive
 // abort
 CANCEL : C A N C E L ;
 NOLIST : N O L I S T  ;
+HEADER : H E A D E R ;
+STDDEV : S T D D E V;
+POSITION: P O S I T I O N;
 
 //array
 ARRAY : A R R A Y  ;
@@ -261,6 +268,7 @@ DROP: D R O P;
 PROC : P R O C ;
 ANOVA : A N O V A;
 MEANS : M E A N S ;
+MEAN  : M E A N;
 REG : R E G ;
 CORR : C O R R;
 SGPLOT : S G P L O T ;
@@ -300,8 +308,10 @@ INColon : IN ':' ;
 AND : A N D | '&' ;
 OR : O R | '|' | '!' ;
 NOT : N O T | '^' | '~' ;
-MIN : '><';
-MAX : '<>';
+//MIN : '><';
+MIN : M I N;
+//MAX : '<>';
+MAX : M A X;
 
 // NOTE: date, time or bit literals must go ahead of Identifier
 // in case '01jan04'd being recognized as string + Identifier
@@ -323,6 +333,7 @@ FloatingPointLiteral
  | INT '.'
  ;
 Identifier  : [a-zA-Z_] [a-zA-Z_0-9]*  ;
+ID : I D ;
 // nicknames
 DOT : '.' ;
 AT : '@' ;
@@ -358,7 +369,7 @@ fragment Y:('y'|'Y');
 fragment Z:('z'|'Z');
 WS  :   [ \r\t\u000C\n]+ -> channel(HIDDEN) ;
 COMMENT    :   '/*' .*? '*/'    -> channel(HIDDEN) ;
-LINE_COMMENT    :   '*' ~[\r\n]* -> channel(HIDDEN) ;
+//LINE_COMMENT : '*' (~[\r\n]*) -> channel(HIDDEN) ;
 
 
 
