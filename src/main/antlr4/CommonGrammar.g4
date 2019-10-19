@@ -201,6 +201,12 @@ GROUPFORMAT : G R O U P F O R M A T;
 NOTSORTED : N O T S O R  T E D  ;
 DESCENDING : D E S C E N D I N G  | D E S C ;
 
+///proc Sort
+
+SORT: S O R T;
+KEY : K E Y;
+
+
 // call
 CALL : C A L L ;
 

@@ -2,7 +2,7 @@ import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import java.io.*;
@@ -83,7 +83,7 @@ public class SasCustomListener extends SASBaseListener {
     @Override
     public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
         String description =" Read a source file " ;
-        System.out.println(ctx.file_specification().getText());
+
         //CommonTokenStream tokenStream= new CommonTokenStream();
                    // Py code
         // Populate mandatory first and then handle optionals
@@ -136,7 +136,7 @@ public class SasCustomListener extends SASBaseListener {
     public void enterMerge_stmt (SASParser.Merge_stmtContext ctx) {
         // yet  to becompleted
 
-        String description ="  Merge nad Join Data Sets - Conditional Statements" ;
+        String description ="  Merge and Join Data Sets - Conditional Statements" ;
         // Py code
         String columnList ;
         columnList="";
@@ -160,6 +160,34 @@ public class SasCustomListener extends SASBaseListener {
         documentDetail.put("sasCode",ctx.getText());
         documentDetail.put("pythonCode", Pycode);
         processStep.add(documentDetail);
+    }
+
+
+    public void enterProc_sort(SASParser.Proc_sortContext ctx) {
+        // yet  to be completed
+        String description =" Ordering data set observations by the values of one or more variables.Either replaces the original data set or creates a new data set." ;
+        String sasguidance ="http://support.sas.com/documentation/cdl/en/proc/61895/HTML/default/viewer.htm#sort-overview.htm";
+        String pyguidance ="https://pandas.pydata.org/pandas-docs/version/0.18/generated/pandas.DataFrame.sort.html";
+
+        String Pycode = "df"+currDf.toString()+"="+ ctx.collating_seq_opt().Identifier().getText().toString()+".sort"+ "([" + ctx.by_stmt().Identifier().toString() + "])" ;
+        prevDF=currDf;
+        currDf=currDf+1;
+
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        System.out.println(Pycode) ;
+        System.out.println(ctx.getRuleIndex());
+        Document documentDetail = new Document();
+        documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        documentDetail.put("description", description);
+        documentDetail.put("sasGuidance", sasguidance);
+        documentDetail.put("sasCode",ctx.start.getInputStream().getText(interval));
+        documentDetail.put("pythonSyntax",pyguidance);
+        documentDetail.put("pythonCode", Pycode);
+        processStep.add(documentDetail);
+
     }
 
     public void enterBoxplot_stmt(SASParser.Boxplot_stmtContext ctx) {
@@ -205,9 +233,10 @@ public class SasCustomListener extends SASBaseListener {
        // populating  the collection
     document.put("processSteps", processStep);
         collection.insertOne(document);
+        System.out.println(document.toString());
         document.clear();
         processStep.clear();
-        System.out.println(document.toString());
+
     }
 
     public void exitSas_stmt_block(SASParser.Sas_stmt_blockContext ctx) {

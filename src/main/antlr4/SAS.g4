@@ -1,7 +1,7 @@
 grammar SAS;
 import  CommonGrammar,AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt,FreeSAS,
 	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
-	RunStmt, MergeStmt , ProcBoxplot ;
+	RunStmt, MergeStmt , ProcBoxplot, ProcSort ;
 
 /* this grammar implements this script
 data crime;
@@ -51,7 +51,10 @@ data_stmt_list
  ;
 
 proc_stmt
-:boxplot_stmt ;
+:boxplot_stmt
+|proc_sort
+
+;
 
 
 
