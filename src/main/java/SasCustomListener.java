@@ -1,26 +1,21 @@
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
+import javafx.scene.text.Text;
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.TokenStreamRewriter;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import java.io.*;
 import java.util.*;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import org.apache.ecs.rtf.Paragraph;
+import org.apache.ecs.xhtml.div;
+import org.apache.ecs.xhtml.li;
+import org.apache.ecs.xhtml.ul;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.util.JSON;
-import com.mongodb.BasicDBObjectBuilder;
 import org.bson.Document;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.apache.ecs.*;
+import org.apache.ecs.html.*;
 
 public class SasCustomListener extends SASBaseListener {
      //List<HashMap<String, String>> codeDag = new ArrayList<HashMap<String, String>>();
@@ -38,6 +33,7 @@ public class SasCustomListener extends SASBaseListener {
     List process = new ArrayList();
     List processStep = new ArrayList();
     Document document = new Document();
+    Html html = new Html();
 
     static{
 
@@ -53,40 +49,48 @@ public class SasCustomListener extends SASBaseListener {
         }
     }
 
-
     @Override
     public void enterParse(SASParser.ParseContext ctx) {
        //Deleting the earlier collection
 
-            collection.deleteMany(new BasicDBObject());
+        collection.deleteMany(new BasicDBObject());
+        // HTML Setup
+        html.addElement( new H3("IBM SYNONYM - SAS PY "));
+
+        System.out.println(html.toString());
    }
 
     public void enterData_stmt_block(SASParser.Data_stmt_blockContext ctx) {
         //CharStream a = ctx.start.getInputStream();
-        String description =" New Data process "      ;
-        document.put("index", String.valueOf(stmtNum));
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        String description =" Data process "      ;
+                document.put("index", String.valueOf(stmtNum));
         document.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         document.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
         document.put("description", description);
-        process.add(document);
+        process.add(document); // redundant?
+        dsTarget = ctx.data_stmt().dataset_name_opt(0).dataset_name().getText();
 
-        /*HashMap<String, String> row = new HashMap<String, String>();
-        row.put("index", String.valueOf(stmtNum));
-        row.put("ruleId", String.valueOf(ctx.getRuleIndex()));
-        row.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
-        row.put("description", description);
-        codeDag.add(row);*/
+        //HTML Creation
+        html.addElement(new H4("Data Step: Manipulate existing data sets or create  data sets from raw data files"));
+        html.addElement(new H6("Rule ID" + String.valueOf(ctx.getRuleIndex())+ "Parent Rule ID" + String.valueOf(ctx.getParent().getRuleIndex())));
+
+        System.out.println(html.toString());
         stmtNum = stmtNum+1;
 
     }
 
     @Override
     public void enterInfile_stmt(SASParser.Infile_stmtContext ctx) {
-        String description =" Read a source file " ;
+        String description =" Read a source file " + ctx.file_specification().getText() ;
+        String sasguidance =  "https://documentation.sas.com/?docsetId=lestmtsref&docsetTarget=n1rill4udj0tfun1fvce3j401plo.htm&docsetVersion=9.4&locale=en"
+        String pyguidance = "https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html"
 
-        //CommonTokenStream tokenStream= new CommonTokenStream();
-                   // Py code
-        // Populate mandatory first and then handle optionals
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
         String Pycode = "df"+currDf.toString()+"="+ "pandas.read_csv("+ ctx.file_specification().getText() + ")" ;
         prevDF=currDf;
         currDf=currDf+1;
@@ -100,12 +104,40 @@ public class SasCustomListener extends SASBaseListener {
         documentDetail.put("pythonCode", Pycode);
         documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
         documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        // HTML Creation
+        html.addElement(new ul().addElement(new li(description).addElement(new ul()
+                .addElement(new li("Source SAS Code : " + ctx.start.getInputStream().getText(interval)))
+                        .addElement(new li("SAS Syntax Reference :" + sasguidance))
+                        .addElement(new li("Matching Python Code :" + Pycode))
+                        .addElement(new li("Python Syntax Reference :" + pyguidance))
+                        .addElement(new li(" Rule ID :" + String.valueOf(ctx.getRuleIndex())))
+                        .addElement(new li(" Parent Rule ID :" +String.valueOf(ctx.getParent().getRuleIndex())))
+        )));
+
+
+        /*
+
+                documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+        documentDetail.put("description", description);
+        documentDetail.put("sasGuidance", sasguidance);
+        documentDetail.put("sasCode",ctx.start.getInputStream().getText(interval));
+        documentDetail.put("pythonSyntax",pyguidance);
+        documentDetail.put("pythonCode", Pycode);
+         */
+
+
+
+
         processStep.add(documentDetail);
 
                     }
 
     public void enterInput_stmt(SASParser.Input_stmtContext ctx) {
         String description =" Select input columns , format and pointers" ;
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
         // Py code
         String columnList ;
         columnList="";
@@ -130,38 +162,83 @@ public class SasCustomListener extends SASBaseListener {
         documentDetail.put("pythonCode", Pycode);
         processStep.add(documentDetail);
 
+        //HTML Creation
+        html.addElement(new ul().addElement(new li(description).addElement(new ul()
+                .addElement(new li("Source SAS Code : " + ctx.start.getInputStream().getText(interval)))
+                .addElement(new li("SAS Syntax Reference :" + "http://support.sas.com/documentation/cdl/en/lrdict/64316/HTML/default/viewer.htm#a000146292.htm"))
+                .addElement(new li("Matching Python Code :" + Pycode))
+                .addElement(new li("Python Syntax Reference :" + "https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#selection-by-positionl"))
+                .addElement(new li(" Rule ID :" + String.valueOf(ctx.getRuleIndex())))
+                .addElement(new li(" Parent Rule ID :" +String.valueOf(ctx.getParent().getRuleIndex())))
+        )));
+
 
     }
 
-    public void enterMerge_stmt (SASParser.Merge_stmtContext ctx) {
-        // yet  to becompleted
+    public void enterMerge_join_stmt (SASParser.Merge_join_stmtContext ctx) {
 
-        String description ="  Merge and Join Data Sets - Conditional Statements" ;
-        // Py code
-        String columnList ;
-        columnList="";
-        //ctx.input_specification().clear();
-        for (int i = 0; i < ctx.dataset_name_opt().size(); i++) {
-            if (i==ctx.dataset_name_opt().size()-1) {
-                columnList = columnList + ctx.dataset_name_opt(i).getText() ;
-            }else {
-                columnList = columnList  + ctx.dataset_name_opt(i).getText()+ ",";
-            }
+       /* System.out.println(ctx.ds_name(0).Identifier().getText());
+        System.out.println(ctx.ds_name(1).Identifier().getText());
+        System.out.println(ctx.by_stmt().Identifier(0).getText());
+        System.out.println(ctx.if_stmt().expression().getText());
+        System.out.println(ctx.if_stmt().expression().expression().size());*/
+
+        if (ctx.if_stmt().expression().expression().size() == 2) {
+
+            String description =" Inner Join of Data Sets " + "of " + ctx.ds_name(0).Identifier().getText() + "  " +ctx.ds_name(1).Identifier().getText() ;
+            String sasguidance ="http://support.sas.com/documentation/cdl/en/basess/58133/HTML/default/viewer.htm#a001318494.htm";
+            String pyguidance ="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html";
+            String Pycode= dsTarget+"="+ "pd.merge(" + ctx.ds_name(0).Identifier().getText() + "," + ctx.ds_name(1).Identifier().getText()+"," +"on='"+ctx.by_stmt().Identifier(0).getText() +"'," + "how='inner'"+","+"sort=True"+")"                ;
+            int a = ctx.start.getStartIndex();
+            int b = ctx.stop.getStopIndex();
+            Interval interval = new Interval(a,b);
+            Document documentDetail = new Document();
+            documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+            documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+            documentDetail.put("description", description);
+            documentDetail.put("sasGuidance", sasguidance);
+            documentDetail.put("sasCode",ctx.start.getInputStream().getText(interval));
+            documentDetail.put("pythonSyntax",pyguidance);
+            documentDetail.put("pythonCode", Pycode);
+            processStep.add(documentDetail);
+
+            //HTML Creation
+            html.addElement(new ul().addElement(new li(description).addElement(new ul()
+                    .addElement(new li("Source SAS Code : " + ctx.start.getInputStream().getText(interval)))
+                    .addElement(new li("SAS Syntax Reference :" + "http://support.sas.com/documentation/cdl/en/lrdict/64316/HTML/default/viewer.htm#a000146292.htm"))
+                    .addElement(new li("Matching Python Code :" + Pycode))
+                    .addElement(new li("Python Syntax Reference :" + "https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#selection-by-positionl"))
+                    .addElement(new li(" Rule ID :" + String.valueOf(ctx.getRuleIndex())))
+                    .addElement(new li(" Parent Rule ID :" +String.valueOf(ctx.getParent().getRuleIndex())))
+            )));
+
         }
-        //TODO pointer and format
-        String Pycode = "df"+currDf.toString()+"="+ "df"+ prevDF.toString()+"[[" + columnList+ "]]" ;
-        prevDF=currDf;
-        currDf=currDf+1;
-        System.out.println(ctx.getRuleIndex());
-        Document documentDetail = new Document();
-        documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
-        documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
-        documentDetail.put("description", description);
-        documentDetail.put("sasCode",ctx.getText());
-        documentDetail.put("pythonCode", Pycode);
-        processStep.add(documentDetail);
-    }
+ //// need to put (left or right)
+        if (ctx.if_stmt().expression().expression().size() == 0) {
 
+            String description ="Left Outer Join of Data Sets " + "of " + ctx.ds_name(0).Identifier().getText() + "  " + ctx.ds_name(1).Identifier().getText();
+            String sasguidance ="http://support.sas.com/documentation/cdl/en/proc/61895/HTML/default/viewer.htm#sort-overview.htm";
+            String pyguidance ="https://pandas.pydata.org/pandas-docs/version/0.18/generated/pandas.DataFrame.sort.html";
+            String Pycode= dsTarget+"="+ "pd.merge(" + ctx.ds_name(0).Identifier().getText() + "," + ctx.ds_name(1).Identifier().getText()+"," +"on='"+ctx.by_stmt().Identifier(0).getText() +"'," + "how='left'"+","+"sort=True"+")";
+            System.out.println(Pycode);
+            int a = ctx.start.getStartIndex();
+            int b = ctx.stop.getStopIndex();
+            Interval interval = new Interval(a,b);
+            System.out.println(Pycode) ;
+            System.out.println(ctx.getRuleIndex());
+            Document documentDetail = new Document();
+            documentDetail.put("ruleId", String.valueOf(ctx.getRuleIndex()));
+            documentDetail.put("parentRuleID", String.valueOf(ctx.getParent().getRuleIndex()));
+            documentDetail.put("description", description);
+            documentDetail.put("sasGuidance", sasguidance);
+            documentDetail.put("sasCode",ctx.start.getInputStream().getText(interval));
+            documentDetail.put("pythonSyntax",pyguidance);
+            documentDetail.put("pythonCode", Pycode);
+            processStep.add(documentDetail);
+        }
+
+
+    }
 
     public void enterProc_sort(SASParser.Proc_sortContext ctx) {
         // yet  to be completed
@@ -220,13 +297,6 @@ public class SasCustomListener extends SASBaseListener {
         documentDetail.put("pythonCode", Pycode);
         processStep.add(documentDetail); */
     }
-
-
-
-
-
-
-
 
 
     public void exitData_stmt_block(SASParser.Data_stmt_blockContext ctx) {

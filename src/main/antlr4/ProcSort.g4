@@ -6,7 +6,7 @@ sort_main
 proc_sort
 : PROC SORT  collating_seq_opt other_opt*';'
   by_stmt
-  key_stmt
+  key_stmt?
 ;
 
 collating_seq_opt

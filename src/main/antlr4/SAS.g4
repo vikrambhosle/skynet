@@ -1,7 +1,7 @@
 grammar SAS;
 import  CommonGrammar,AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt,FreeSAS,
 	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
-	RunStmt, MergeStmt , ProcBoxplot, ProcSort ;
+	RunStmt, MergeJoinStmt , ProcBoxplot, ProcSort,IfStmt ;
 
 /* this grammar implements this script
 data crime;
@@ -13,8 +13,7 @@ proc means data = crime;
   var crime poverty single;
 run;
 */
-parse :(sas_stmt_block)*EOF
- ;
+parse :(sas_stmt_block)*EOF ;
 
 // a statement block is either data statement, procedure block or new lines
 sas_stmt_block :
@@ -30,6 +29,7 @@ data_stmt_list+
 data_stmt_list
 :infile_stmt
 |input_stmt
+|merge_join_stmt
 |abort_stmt
 |array_stmt
 |by_stmt
@@ -47,7 +47,8 @@ data_stmt_list
 |proc_stmt// assign must go last
 |assign_stmt
 |run_stmt
-|merge_stmt
+//|merge_stmt
+
  ;
 
 proc_stmt
@@ -56,18 +57,15 @@ proc_stmt
 
 ;
 
-
-
-
-if_stmt
- : IF expression ';'
- ;
-
 if_then_else_stmt
  : IF expression THEN sas_stmt_list (ELSE sas_stmt_list)?
  ;
 
 delete_stmt : DELETE ';' ;
+
+
+
+
 
 // TODO: incomplete
 /*infile_stmt

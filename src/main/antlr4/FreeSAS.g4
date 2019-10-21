@@ -1,7 +1,7 @@
 grammar FreeSAS;
 import CommonGrammar, AbortStmt, ProcStmt, ArrayStmt, AssignmentStmt, 
 	ByStmt, CallStmt, DataStmt, DatalinesStmt, DropStmt, InfileStmt, InputStmt, MeansProc,
-	RunStmt;
+	RunStmt, IfStmt;
 
 parse
  : (sas_stmt_list) * EOF
@@ -29,9 +29,7 @@ sas_stmt_list
  | run_stmt
  ;
  
-if_stmt 
- : IF expression ';'
- ;
+
 
 if_then_else_stmt
  : IF expression THEN sas_stmt_list (ELSE sas_stmt_list)? 

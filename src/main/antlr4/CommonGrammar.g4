@@ -205,7 +205,9 @@ DESCENDING : D E S C E N D I N G  | D E S C ;
 
 SORT: S O R T;
 KEY : K E Y;
+//MERGE
 
+MERGE: M E R G E;
 
 // call
 CALL : C A L L ;
@@ -345,8 +347,8 @@ DOT : '.' ;
 AT : '@' ;
 EQUAL : '=' ;
 COMMA : ',' ;
-LBracket : '(' | '[' | '{' ;
-RBracket : ')' | ']' | '}' ;
+//LBracket : '(' | '[' | '{' ;
+//RBracket : ')' | ']' | '}' ;
 fragment A:('a'|'A');
 fragment B:('b'|'B');
 fragment C:('c'|'C');

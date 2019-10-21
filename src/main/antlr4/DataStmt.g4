@@ -17,7 +17,8 @@ data_stmt
 // DATA <data-set-name-1 <(data-set-options-1)>> 
 // DATA view-name <data-set-name-1 <(data-set-options-1)>>
 dataset_name_opt
- : dataset_name ('(' variables '=' (~('('|')'))*? ')')?
+//:dataset_name
+: dataset_name ('(' variables '=' (~('('|')'))*? ')')?
  ;
 
 
