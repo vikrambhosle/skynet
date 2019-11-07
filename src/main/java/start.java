@@ -1,8 +1,8 @@
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.*;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -16,7 +16,7 @@ public class start {
         // Reading the File
         String javaClassContent = "";
         Properties prop = new Properties();
-            try (InputStream input = new FileInputStream("C:\\Users\\VIKRAMBHOSLE\\IdeaProjects\\skynet\\src\\main\\java\\config.properties"))
+            try (InputStream input = new FileInputStream("C:\\temp\\config.properties"))
             {
                   // load a properties file
                 prop.load(input);
